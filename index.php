@@ -9,41 +9,41 @@ Author URI: https://www.wpdownloadmanager.com/
 Text Domain: wpdm-archive-page
 */
 
-namespace WPDM\AddOn\AddOnStarter;
+namespace WPDM\AddOn\CustomStats;
 
 
 /**
  * Plugin version
  */
-define('WPDMAD_VERSION', '1.0.0');
+define('WPDMCSTAT_VERSION', '1.0.0');
 
 /**
  * Text domain constant
  */
-define('WPDMAD_TEXT_DOMAIN', dirname(__DIR__));
+define('WPDMCSTAT_TEXT_DOMAIN', dirname(__DIR__));
 
 /**
  * Plugin dir name
  */
-define("WPDMAD_DIR_NAME", basename(__DIR__));
+define("WPDMCSTAT_DIR_NAME", basename(__DIR__));
 
 /**
  * Plugin base dir
  */
-define("WPDMAD_BASE_DIR", dirname(__FILE__) . '/');
+define("WPDMCSTAT_BASE_DIR", dirname(__FILE__) . '/');
 
 /**
  * Plugin base url
  */
-define("WPDMAD_BASE_URL", plugin_dir_url(__FILE__));
+define("WPDMCSTAT_BASE_URL", plugin_dir_url(__FILE__));
 
 /**
  * Plugin asset url
  */
-define("WPDMAD_ASSET_URL", plugin_dir_url(__FILE__).'assets/');
+define("WPDMCSTAT_ASSET_URL", plugin_dir_url(__FILE__).'assets/');
 
 
-class AddOnStarter
+class CustomStats
 {
 
 
@@ -61,7 +61,8 @@ class AddOnStarter
     {
         add_action('plugins_loaded', array($this, 'loadEssentials') );
 
-        add_action('wp_enqueue_scripts',array($this, 'enqueue'));
+        add_action('wp_enqueue_scripts',array($this, 'enqueueScripts'));
+        add_action('admin_enqueue_scripts',array($this, 'adminEnqueueScripts'));
 
     }
 
@@ -73,7 +74,7 @@ class AddOnStarter
         spl_autoload_register(function ($class) {
 
             // project-specific namespace prefix
-            $prefix = 'WPDM\\AddOn\\AddOnStarter\\';
+            $prefix = 'WPDM\\AddOn\\CustomStats\\';
 
             // base directory for the namespace prefix
             $base_dir = __DIR__ . '/src/';
@@ -108,13 +109,13 @@ class AddOnStarter
         /**
          * Load text domain
          */
-        load_plugin_textdomain(WPDMAD_TEXT_DOMAIN, WPDMAD_BASE_URL ."/languages/", WPDMAD_TEXT_DOMAIN.'/languages/');
+        load_plugin_textdomain(WPDMCSTAT_TEXT_DOMAIN, WPDMCSTAT_BASE_URL ."/languages/", WPDMCSTAT_TEXT_DOMAIN.'/languages/');
     }
 
     /**
      * Styles and scripts required for this plugin
      */
-    function enqueue(){
+    function enqueueScripts(){
         global $post;
 
         if( is_object($post) ){
@@ -127,12 +128,16 @@ class AddOnStarter
             )
                 return;
         }
-        wp_enqueue_style("wpdmap-styles", WPDMAD_ASSET_URL.'css/style.min.css');
-        wp_enqueue_script("wpdmap-scripts", WPDMAD_ASSET_URL.'js/scripts.js', ['wp-i18n'], WPDMAD_VERSION);
+        wp_enqueue_style("wpdmap-styles", WPDMCSTAT_ASSET_URL.'css/style.min.css');
+        wp_enqueue_script("wpdmap-scripts", WPDMCSTAT_ASSET_URL.'js/scripts.js', ['wp-i18n'], WPDMCSTAT_VERSION);
 
+    }
+    function adminEnqueueScripts() {
+        wp_enqueue_style("wpdmap-styles", WPDMCSTAT_ASSET_URL.'css/admin-style.min.css');
+        wp_enqueue_script("wpdmap-scripts", WPDMCSTAT_ASSET_URL.'js/admin-scripts.js', ['wp-i18n'], WPDMCSTAT_VERSION);
     }
 
 }
 
 if(function_exists('WPDM'))
-    $ArchivePages = new AddOnStarter();
+    $ArchivePages = new CustomStats();
